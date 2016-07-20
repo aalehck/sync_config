@@ -7,26 +7,33 @@ defmodule Synconf.Registry do
     GenServer.start_link(__MODULE__, name, name: name)
   end
 
+  def create(server, name) do
+    GenServer.call(server, {:create, name})
+  end
+
   def get(server, filename) do
     GenServer.call(server, {:get, filename})
+  end
+
+  def stop(server) do
+    GenServer.stop(server)
   end
 
   ## Server Callbacks
 
   def init() do
-    names = %{}
-    refs = %{}
-    {:ok, {names, refs}}
+    {:ok, %{}}
   end
 
-  def handle_call({:create, filename}, _from, {names, refs}) do
-    case lookup(names, name) do
+  def handle_call({:create, filename}, _from, state) do
+    case get(names, name) do
       {:ok, pid} ->
 	{:reply, pid, {names, refs}}
+
     end
   end
 
-  def handle_call({:get, filename}, _from, {names, refs} = state) do
-
+  def handle_call({:get, filename}, _from, state) do
+    
   end
 end

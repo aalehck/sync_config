@@ -45,7 +45,7 @@ defmodule Conf do
     end
   end
 
-  def patch(conf, diff) do
+  # def patch(conf, diff) do
 
-  end
+  # end
 end

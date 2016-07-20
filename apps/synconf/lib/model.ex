@@ -52,8 +52,7 @@ defmodule Conf do
     make_diff(conf, old_ver_id, conf.head)
   end
   def make_diff(conf, old_ver_id, new_ver_id) do
-    if Map.has_key?(conf.versions, old_ver_id)
-    and Map.has_key?(conf.versions, new_ver_id) do
+    if Map.has_key?(conf.versions, old_ver_id) and Map.has_key?(conf.versions, new_ver_id) do
       Diff.diff(conf.versions[old_ver_id].content, conf.versions[new_ver_id].content)
     else
       :error
@@ -64,5 +63,10 @@ defmodule Conf do
     patched = Diff.patch(current(conf).content, diff, &to_string/1)
     File.write(conf.path, patched)
     update(conf)
+  end
+
+  def copy(conf, destination) do
+    File.copy(conf.path, destination)
+    %{conf | path: destination}
   end
 end

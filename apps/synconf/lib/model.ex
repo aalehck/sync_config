@@ -20,7 +20,7 @@ defmodule Conf do
   def update?(conf) do
     {:ok, stat} = File.stat(conf.path)
     head_ver = conf.versions[conf.head].timestamp
-    if stat.mtime > head_ver do
+    if stat.mtime >= head_ver do
       {:ok, content} = File.read(conf.path)
       :crypto.hash(:sha, content) != conf.head
     else
@@ -29,19 +29,18 @@ defmodule Conf do
   end
 
   def update(conf) do
-    case update?(conf) do
-      true ->
-	with {:ok, content} <- File.read(conf.path),
-	     {:ok, stat} <- File.stat(conf.path),
-	       chksum = :crypto.hash(:sha, content),
-	  do: %Conf{path: conf.path,
-		    head: chksum,
-		    versions: Map.put(conf.versions,
-		      chksum, %Ver{content: content,
-				   parent: conf.head,
-				   timestamp: stat.mtime})}
-      false ->
-	conf
+    if update?(conf) do
+      with {:ok, content} <- File.read(conf.path),
+	   {:ok, stat} <- File.stat(conf.path),
+	     chksum = :crypto.hash(:sha, content),
+	do: %Conf{path: conf.path,
+		  head: chksum,
+		  versions: Map.put(conf.versions,
+		    chksum, %Ver{content: content,
+				 parent: conf.head,
+				 timestamp: stat.mtime})}
+    else
+      conf
     end
   end
 

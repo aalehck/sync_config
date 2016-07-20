@@ -1,3 +1,7 @@
+defmodule Ver do
+  defstruct [:content, :parent, :timestamp]
+end
+
 defmodule Conf do
   defstruct path: "", head: "", versions: %{}
 
@@ -17,7 +21,7 @@ defmodule Conf do
     {:ok, stat} = File.stat(conf.path)
     head_ver = conf.versions[conf.head].timestamp
     if stat.mtime > head_ver do
-      {:ok, content} File.read(conf.path)
+      {:ok, content} = File.read(conf.path)
       :crypto.hash(:sha, content) != conf.head
     else
       false
@@ -44,8 +48,4 @@ defmodule Conf do
   def patch(conf, diff) do
 
   end
-end
-
-defmodule Ver do
-  defstruct [:content, :parent, :timestamp]
 end

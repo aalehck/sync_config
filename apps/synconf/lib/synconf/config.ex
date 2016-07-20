@@ -12,10 +12,10 @@ defmodule Synconf.Config do
   end
 
   def update(conf) do
-    Agent.update(conf, fn -> Conf.update(conf))
+    Agent.update(conf, fn -> Conf.update(conf) end)
   end
 
   def patch(conf, diff) do
-    Agent.udpate(conf, fn -> Conf.patch(conf, diff))
+    Agent.udpate(conf, fn -> Conf.patch(conf, diff) end)
   end    
 end

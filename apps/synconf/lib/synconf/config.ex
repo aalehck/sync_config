@@ -16,6 +16,6 @@ defmodule Synconf.Config do
   end
 
   def patch(conf, diff) do
-    Agent.udpate(conf, fn -> Conf.patch(conf, diff) end)
+    Agent.update(conf, fn -> Conf.patch(conf, diff) end)
   end    
 end

@@ -11,8 +11,8 @@ defmodule Synconf.Registry do
     GenServer.call(server, {:create, name})
   end
 
-  def get(server, filename) do
-    GenServer.call(server, {:get, filename})
+  def lookup(server, filename) do
+    GenServer.call(server, {:lookup, filename})
   end
 
   def stop(server) do
@@ -25,15 +25,21 @@ defmodule Synconf.Registry do
     {:ok, %{}}
   end
 
-  def handle_call({:create, filename}, _from, state) do
-    case get(names, name) do
-      {:ok, pid} ->
-	{:reply, pid, {names, refs}}
-
+  def handle_cast({:create, filename}, registry) do
+    if Map.has_key?(registry, filename) do
+      {:noreply, registry}
+    else
+      {:ok, pid} = Synconf.Config.Supervisor.start_conf
+      {:noreply, Map.put(registry, filename, pid)}
     end
   end
 
-  def handle_call({:get, filename}, _from, state) do
-    
+  def handle_call({:lookup, filename}, _from, registry) do
+    case Map.fetch(registry, filename) do
+      {:ok, pid} ->
+	{:reply, {:ok, pid}, registry}
+      :error ->
+	{:reply, :error, registry}
+    end
   end
 end

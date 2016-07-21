@@ -1,3 +1,38 @@
+defmodule Synconf.Registry do
+  use GenServer
+
+  ## Client API
+
+  def start_link do
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
+  end
+
+  def get(server) do
+    GenServer.call(server, :get)
+  end
+
+  def add_conf(server, conf) do
+    GenServer.call(server, {:add, conf})
+  end
+
+  ## Server Callbacks
+
+  def init(:ok) do
+    confs = %{}
+    groups = []
+    {:ok, {confs, groups}}
+  end
+
+  def handle_call({:add, conf}, _from, {confs, groups} = state) do
+    new_state = {Map.put(confs, Synconf.Config.get(conf).path, conf), groups}
+    {:reply, new_state, new_state}
+  end
+
+  def handle_call(:get, _from, state) do
+    {:reply, state, state}
+  end
+end
+
 # defmodule Synconf.Registry do
 #   use GenServer
 

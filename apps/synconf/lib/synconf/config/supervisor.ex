@@ -7,8 +7,8 @@ defmodule Synconf.Config.Supervisor do
     Supervisor.start_link(__MODULE__, :ok, name: @name)
   end
 
-  def start_conf do
-    Supervisor.start_child(@name, [])
+  def start_conf(filepath) do
+    Supervisor.start_child(@name, [filepath])
   end
 
   def init(:ok) do

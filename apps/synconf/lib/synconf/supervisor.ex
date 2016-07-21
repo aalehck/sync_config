@@ -7,7 +7,7 @@ defmodule Synconf.Supervisor do
 
   def init(:ok) do
     children = [
-      worker(Synconf.Registry, [Synconf.Registry])
+      supervisor(Synconf.Config.Supervisor, [])
     ]
 
     supervise(children, strategy: :one_for_one)
